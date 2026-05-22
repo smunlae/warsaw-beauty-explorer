@@ -15,7 +15,7 @@ class SalonListItem(BaseModel):
     reviews_count: int
     cover_image_url: str | None = None
     price_range: str | None = None
-    services_offered: list[str] = Field(default_factory=list)
+    services_offered: list[str] | None = None
 
 
 class SalonDetail(SalonListItem):

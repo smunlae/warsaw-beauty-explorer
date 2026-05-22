@@ -32,6 +32,26 @@ button {
   padding: 20px 28px;
 }
 
+.refresh-panel {
+  align-items: end;
+  display: flex;
+  gap: 12px;
+}
+
+.refresh-panel label {
+  min-width: 150px;
+}
+
+.refresh-panel span {
+  color: #667085;
+  padding-bottom: 10px;
+  white-space: nowrap;
+}
+
+.refresh-panel input {
+  max-width: 150px;
+}
+
 .topbar h1,
 .details h2,
 .salon-card h2 {
@@ -268,6 +288,48 @@ select {
   padding: 10px 14px;
 }
 
+.primary:disabled {
+  background: #98a2b3;
+  cursor: not-allowed;
+}
+
+.scraper-progress {
+  background: #ffffff;
+  border: 1px solid #d8dee6;
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.scraper-progress__meta {
+  color: #344054;
+  display: flex;
+  font-size: 13px;
+  font-weight: 700;
+  justify-content: space-between;
+}
+
+.scraper-progress__bar {
+  background: #eef2f6;
+  border-radius: 999px;
+  height: 9px;
+  overflow: hidden;
+}
+
+.scraper-progress__bar span {
+  background: #2176ff;
+  display: block;
+  height: 100%;
+  transition: width 180ms ease;
+}
+
+.scraper-progress p {
+  color: #667085;
+  font-size: 13px;
+  margin: 0;
+}
+
 .error {
   color: #b42318;
 }
@@ -280,9 +342,29 @@ select {
   .details {
     position: static;
   }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
 }
 
 @media (max-width: 640px) {
+  .refresh-panel {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .refresh-panel input {
+    max-width: none;
+  }
+
+  .refresh-panel span {
+    padding-bottom: 0;
+  }
+
   .salon-card {
     grid-template-columns: 1fr;
   }

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
+from typing import Callable
 
 from backend.app.core.database import SessionLocal, init_db
 from backend.app.models.salon import Salon
@@ -13,6 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 _NORMALIZE_RE = re.compile(r"[^a-z0-9]+")
+ProgressCallback = Callable[[int, int, int], None]
 
 
 @dataclass(frozen=True)
@@ -23,10 +25,10 @@ class PipelineResult:
     updated: int
 
 
-def run_pipeline(config: ScraperConfig) -> PipelineResult:
+def run_pipeline(config: ScraperConfig, progress_callback: ProgressCallback | None = None) -> PipelineResult:
     init_db()
     spider = SpiderRegistry.create(config.source)
-    records = spider.scrape(config)
+    records = spider.scrape(config, progress_callback=progress_callback)
 
     db = SessionLocal()
     try:
@@ -96,7 +98,7 @@ def _apply_record(salon: Salon, record: SalonIngestion, dedupe_key: str) -> None
     salon.phone_number = record.phone_number
     salon.website_url = record.website_url
     salon.social_media_url = record.social_media_url
-    salon.services_offered = json.dumps(record.services_offered, ensure_ascii=False)
+    salon.services_offered = json.dumps(record.services_offered, ensure_ascii=False) if record.services_offered else None
     salon.price_range = record.price_range
     salon.dedupe_key = dedupe_key
 

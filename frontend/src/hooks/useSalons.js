@@ -12,6 +12,7 @@ export function useSalons(filters) {
     if (filters.district) params.set("district", filters.district);
     if (filters.service) params.set("service", filters.service);
     if (filters.q) params.set("q", filters.q);
+    if (filters.sort_by) params.set("sort_by", filters.sort_by);
     return params.toString();
   }, [filters]);
 
@@ -52,8 +53,15 @@ export async function updateSalon(id, payload) {
   return response.json();
 }
 
-export async function refreshScraper() {
-  const response = await fetch(`${API_BASE_URL}/scraper/run?source=booksy`, { method: "POST" });
+export async function refreshScraper(salonCount) {
+  const params = new URLSearchParams({ source: "booksy", salon_count: String(salonCount) });
+  const response = await fetch(`${API_BASE_URL}/scraper/run?${params.toString()}`, { method: "POST" });
   if (!response.ok) throw new Error("Failed to start scraper");
+  return response.json();
+}
+
+export async function fetchScraperStatus() {
+  const response = await fetch(`${API_BASE_URL}/scraper/status`);
+  if (!response.ok) throw new Error("Failed to load scraper status");
   return response.json();
 }

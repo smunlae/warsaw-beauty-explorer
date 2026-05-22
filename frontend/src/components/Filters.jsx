@@ -31,6 +31,19 @@ export function Filters({ filters, districts, onChange }) {
           placeholder="Hair, nails, brows"
         />
       </label>
+
+      <label>
+        Sort by
+        <select
+          value={filters.sort_by}
+          onChange={(event) => onChange({ ...filters, sort_by: event.target.value })}
+        >
+          <option value="reviews_count">Reviews</option>
+          <option value="rating">Rating</option>
+          <option value="name">Name</option>
+          <option value="price">Price</option>
+        </select>
+      </label>
     </aside>
   );
 }

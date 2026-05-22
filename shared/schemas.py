@@ -17,7 +17,7 @@ class SalonIngestion(BaseModel):
     phone_number: str | None = None
     website_url: str | None = None
     social_media_url: str | None = None
-    services_offered: list[str] = Field(default_factory=list)
+    services_offered: list[str] | None = None
     price_range: str | None = None
 
     @field_validator(
