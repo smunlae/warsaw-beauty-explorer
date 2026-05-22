@@ -92,6 +92,7 @@ def _apply_record(salon: Salon, record: SalonIngestion, dedupe_key: str) -> None
     salon.district = record.district
     salon.rating = record.rating
     salon.reviews_count = record.reviews_count
+    salon.cover_image_url = record.cover_image_url
     salon.phone_number = record.phone_number
     salon.website_url = record.website_url
     salon.social_media_url = record.social_media_url

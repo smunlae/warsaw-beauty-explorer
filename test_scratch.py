@@ -39,7 +39,7 @@ def parse_and_extract(html_content):
             address, district = "No info", "Warszawa"
 
         rating_info = salon.get("aggregateRating", {})
-        rating = rating_info.get("ratingValue")   # Может быть None, если отзывов нет
+        rating = rating_info.get("ratingValue")
         reviews_count = rating_info.get("reviewCount", 0)
 
         page_salons.append({
@@ -47,7 +47,7 @@ def parse_and_extract(html_content):
             "address": address,
             "district": district,
             "url": url,
-            "rating": float(rating) if rating else None,  # Приводим к числу для БД
+            "rating": float(rating) if rating else None,
             "reviews_count": int(reviews_count) if reviews_count else 0
         })
 

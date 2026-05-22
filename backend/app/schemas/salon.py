@@ -13,6 +13,7 @@ class SalonListItem(BaseModel):
     district: str
     rating: float | None = None
     reviews_count: int
+    cover_image_url: str | None = None
     price_range: str | None = None
     services_offered: list[str] = Field(default_factory=list)
 
@@ -32,6 +33,7 @@ class SalonUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1)
     address: str | None = Field(default=None, min_length=1)
     district: str | None = Field(default=None, min_length=1)
+    cover_image_url: str | None = None
     phone_number: str | None = None
     website_url: str | None = None
     social_media_url: str | None = None

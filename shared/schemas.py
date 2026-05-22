@@ -13,13 +13,22 @@ class SalonIngestion(BaseModel):
     district: str = Field(min_length=1)
     rating: float | None = Field(default=None, ge=0, le=5)
     reviews_count: int = Field(default=0, ge=0)
+    cover_image_url: str | None = None
     phone_number: str | None = None
     website_url: str | None = None
     social_media_url: str | None = None
     services_offered: list[str] = Field(default_factory=list)
     price_range: str | None = None
 
-    @field_validator("source_url", "phone_number", "website_url", "social_media_url", "price_range", mode="before")
+    @field_validator(
+        "source_url",
+        "cover_image_url",
+        "phone_number",
+        "website_url",
+        "social_media_url",
+        "price_range",
+        mode="before",
+    )
     @classmethod
     def empty_string_to_none(cls, value: object) -> object:
         if isinstance(value, str) and not value.strip():

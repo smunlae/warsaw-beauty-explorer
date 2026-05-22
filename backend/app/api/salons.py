@@ -36,6 +36,7 @@ def _salon_to_list_item(salon: Salon) -> SalonListItem:
         district=salon.district,
         rating=salon.rating,
         reviews_count=salon.reviews_count,
+        cover_image_url=salon.cover_image_url,
         price_range=salon.price_range,
         services_offered=_services_from_db(salon.services_offered),
     )

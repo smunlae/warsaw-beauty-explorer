@@ -53,6 +53,7 @@ def _parse_salon_item(salon: dict[str, Any]) -> SalonIngestion | None:
         district=district,
         rating=rating,
         reviews_count=reviews_count,
+        cover_image_url=_parse_image_url(salon.get("image")),
     )
 
 
@@ -100,3 +101,23 @@ def _clean_optional_string(value: object) -> str | None:
         return None
     value = value.strip()
     return value or None
+
+
+def _parse_image_url(value: object) -> str | None:
+    if isinstance(value, str):
+        return _clean_optional_string(value)
+
+    if isinstance(value, list):
+        for item in value:
+            parsed = _parse_image_url(item)
+            if parsed:
+                return parsed
+        return None
+
+    if isinstance(value, dict):
+        for key in ("url", "image", "contentUrl"):
+            parsed = _parse_image_url(value.get(key))
+            if parsed:
+                return parsed
+
+    return None

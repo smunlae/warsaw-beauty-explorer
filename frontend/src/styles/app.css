@@ -94,8 +94,9 @@ select {
   border-radius: 8px;
   color: inherit;
   display: grid;
-  gap: 8px;
-  padding: 15px;
+  gap: 14px;
+  grid-template-columns: 132px minmax(0, 1fr);
+  padding: 12px;
   text-align: left;
   width: 100%;
 }
@@ -115,12 +116,50 @@ select {
   gap: 12px;
 }
 
+.salon-card__content {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.salon-card__cover,
+.details__cover {
+  align-items: center;
+  background: #eef2f6;
+  border: 1px solid #d8dee6;
+  color: #475467;
+  display: flex;
+  font-weight: 800;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.salon-card__cover {
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  min-height: 98px;
+}
+
+.salon-card__cover img,
+.details__cover img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.details__cover {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  font-size: 24px;
+  width: 100%;
+}
+
 .salon-card h2 {
   font-size: 17px;
   line-height: 1.25;
+  min-width: 0;
 }
 
-.rating,
 .muted,
 .primary,
 .details__header a {
@@ -129,17 +168,55 @@ select {
   gap: 6px;
 }
 
-.rating {
-  color: #8a5a00;
-  white-space: nowrap;
-}
-
 .muted,
 .reviews,
 .price,
 .state {
   color: #667085;
   margin: 0;
+}
+
+.rating-stars {
+  align-items: center;
+  color: #8a5a00;
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 7px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rating-stars--empty {
+  color: #667085;
+  font-size: 13px;
+}
+
+.rating-stars__stack {
+  display: inline-block;
+  font-size: 15px;
+  height: 15px;
+  letter-spacing: 0;
+  line-height: 15px;
+  position: relative;
+}
+
+.rating-stars__base {
+  color: #d0d5dd;
+}
+
+.rating-stars__fill {
+  color: #f5b301;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.rating-stars__value {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .chips {
@@ -202,5 +279,20 @@ select {
 
   .details {
     position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .salon-card {
+    grid-template-columns: 1fr;
+  }
+
+  .salon-card__cover {
+    aspect-ratio: 16 / 9;
+  }
+
+  .salon-card__topline {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

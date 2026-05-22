@@ -21,6 +21,7 @@ class Salon(Base):
     district: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
     rating: Mapped[float | None] = mapped_column(Float, nullable=True)
     reviews_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cover_image_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     phone_number: Mapped[str | None] = mapped_column(String(80), nullable=True)
     website_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     social_media_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)

@@ -31,6 +31,12 @@ export function SalonDetails({ salonId, onSaved }) {
   if (!salon || !form) return <section className="details empty">{status || "Loading..."}</section>;
 
   const setField = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+  const placeholder = salon.name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 
   const save = async () => {
     setStatus("Saving...");
@@ -45,6 +51,14 @@ export function SalonDetails({ salonId, onSaved }) {
 
   return (
     <section className="details">
+      <div className="details__cover">
+        {salon.cover_image_url ? (
+          <img src={salon.cover_image_url} alt="" />
+        ) : (
+          <span>{placeholder || "WB"}</span>
+        )}
+      </div>
+
       <div className="details__header">
         <div>
           <h2>{salon.name}</h2>
