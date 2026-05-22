@@ -47,7 +47,7 @@ def run_pipeline(config: ScraperConfig, progress_callback: ProgressCallback | No
         db.close()
 
 
-def upsert_salons(db: Session, records: list[SalonIngestion]) -> PipelineResult:
+def upsert_salons(db: Session, records: list[SalonIngestion], batch_size: int = 20) -> PipelineResult:
     inserted = 0
     updated = 0
     seen_keys: set[str] = set()
@@ -70,6 +70,9 @@ def upsert_salons(db: Session, records: list[SalonIngestion]) -> PipelineResult:
         else:
             db.add(_new_salon(record, dedupe_key))
             inserted += 1
+
+        if (inserted + updated) % batch_size == 0:
+            db.commit()
 
     return PipelineResult(source="mixed", collected=len(records), inserted=inserted, updated=updated)
 

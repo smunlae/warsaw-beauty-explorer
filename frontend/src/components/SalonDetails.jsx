@@ -20,6 +20,7 @@ export function SalonDetails({ salonId, onSaved }) {
           phone_number: data.phone_number ?? "",
           website_url: data.website_url ?? "",
           social_media_url: data.social_media_url ?? "",
+          services_offered: (data.services_offered ?? []).join(", "),
           price_range: data.price_range ?? "",
         });
         setStatus("");
@@ -41,7 +42,17 @@ export function SalonDetails({ salonId, onSaved }) {
   const save = async () => {
     setStatus("Saving...");
     try {
-      await updateSalon(salon.id, form);
+      const payload = {
+        ...form,
+        services_offered: form.services_offered
+          .split(",")
+          .map((service) => service.trim())
+          .filter(Boolean),
+      };
+      if (payload.services_offered.length === 0) {
+        payload.services_offered = null;
+      }
+      await updateSalon(salon.id, payload);
       setStatus("Saved");
       onSaved();
     } catch (error) {
@@ -77,6 +88,7 @@ export function SalonDetails({ salonId, onSaved }) {
         <label className="wide">Address<input value={form.address} onChange={(event) => setField("address", event.target.value)} /></label>
         <label>Phone<input value={form.phone_number} onChange={(event) => setField("phone_number", event.target.value)} /></label>
         <label>Price range<input value={form.price_range} onChange={(event) => setField("price_range", event.target.value)} /></label>
+        <label className="wide">Services offered<textarea value={form.services_offered} onChange={(event) => setField("services_offered", event.target.value)} placeholder="Haircut, coloring, manicure" /></label>
         <label className="wide">Website<input value={form.website_url} onChange={(event) => setField("website_url", event.target.value)} /></label>
         <label className="wide">Social media<input value={form.social_media_url} onChange={(event) => setField("social_media_url", event.target.value)} /></label>
       </div>

@@ -11,6 +11,7 @@ body {
 
 button,
 input,
+textarea,
 select {
   font: inherit;
 }
@@ -94,12 +95,18 @@ label {
 }
 
 input,
+textarea,
 select {
   border: 1px solid #c7d0dc;
   border-radius: 6px;
   color: #15202b;
   padding: 10px 11px;
   width: 100%;
+}
+
+textarea {
+  min-height: 84px;
+  resize: vertical;
 }
 
 .salon-list {
