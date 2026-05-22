@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import json
 from typing import Any
 
@@ -8,14 +9,9 @@ from shared.schemas import SalonIngestion
 
 
 def parse_booksy_listing_page(html_content: str) -> list[SalonIngestion]:
-    parser = LexborHTMLParser(html_content)
-    script_tag = parser.css_first("script[type='application/ld+json'][data-hid='ld-json-0']")
-    if not script_tag:
-        return []
-
-    try:
-        data = json.loads(script_tag.text())
-    except json.JSONDecodeError:
+    parser = LexborHTMLParser(_extract_source_html(html_content))
+    data = _find_listing_json_ld(parser)
+    if not data:
         return []
 
     items = data.get("itemListElement", [])
@@ -35,6 +31,25 @@ def parse_booksy_listing_page(html_content: str) -> list[SalonIngestion]:
             salons.append(parsed)
 
     return salons
+
+
+def _extract_source_html(html_content: str) -> str:
+    parser = LexborHTMLParser(html_content)
+    source_lines = parser.css("td.line-content")
+    if not source_lines:
+        return html_content
+    return html.unescape("\n".join(line.text() for line in source_lines))
+
+
+def _find_listing_json_ld(parser: LexborHTMLParser) -> dict[str, Any] | None:
+    for script_tag in parser.css("script[type='application/ld+json']"):
+        try:
+            data = json.loads(script_tag.text())
+        except json.JSONDecodeError:
+            continue
+        if isinstance(data, dict) and isinstance(data.get("itemListElement"), list):
+            return data
+    return None
 
 
 def _parse_salon_item(salon: dict[str, Any]) -> SalonIngestion | None:

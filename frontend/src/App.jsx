@@ -23,11 +23,13 @@ export default function App() {
   const [selectedSalonId, setSelectedSalonId] = useState(null);
   const [refreshStatus, setRefreshStatus] = useState("");
   const [salonCount, setSalonCount] = useState(100);
+  const [refreshCategory, setRefreshCategory] = useState("hair");
   const [scraperStatus, setScraperStatus] = useState(null);
   const [detailStatus, setDetailStatus] = useState(null);
   const [districts, setDistricts] = useState([]);
   const { salons, loading, error, refetch } = useSalons(filters);
   const pagesToScrape = Math.ceil(Number(salonCount || 0) / 20);
+  const totalPagesToScrape = pagesToScrape * (refreshCategory === "both" ? 2 : 1);
 
   const loadDistricts = useCallback(async () => {
     try {
@@ -40,7 +42,7 @@ export default function App() {
   const startRefresh = async () => {
     setRefreshStatus("Starting scraper...");
     try {
-      const status = await refreshScraper(salonCount);
+      const status = await refreshScraper(salonCount, refreshCategory);
       setScraperStatus(status);
       setRefreshStatus("Scraper started");
     } catch (error) {
@@ -116,8 +118,31 @@ export default function App() {
           <p>{salons.length} salons loaded</p>
         </div>
         <div className="refresh-panel">
+          <div className="refresh-category" aria-label="Salon category">
+            <button
+              className={refreshCategory === "hair" ? "is-active" : ""}
+              onClick={() => setRefreshCategory("hair")}
+              type="button"
+            >
+              Hair
+            </button>
+            <button
+              className={refreshCategory === "nails" ? "is-active" : ""}
+              onClick={() => setRefreshCategory("nails")}
+              type="button"
+            >
+              Nails
+            </button>
+            <button
+              className={refreshCategory === "both" ? "is-active" : ""}
+              onClick={() => setRefreshCategory("both")}
+              type="button"
+            >
+              Both
+            </button>
+          </div>
           <label>
-            Salons to scrape
+            Salons per category
             <input
               min="1"
               max="1000"
@@ -126,7 +151,7 @@ export default function App() {
               onChange={(event) => setSalonCount(Number(event.target.value))}
             />
           </label>
-          <span>{pagesToScrape || 0} pages</span>
+          <span>{totalPagesToScrape || 0} pages</span>
           <button className="primary" onClick={startRefresh} disabled={scraperStatus?.status === "running"}>
             <RefreshCw size={16} /> Refresh data
           </button>

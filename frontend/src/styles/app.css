@@ -39,6 +39,30 @@ button {
   gap: 12px;
 }
 
+.refresh-category {
+  background: #eef2f6;
+  border: 1px solid #c7d0dc;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(68px, 1fr));
+  padding: 3px;
+}
+
+.refresh-category button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #344054;
+  font-weight: 700;
+  padding: 9px 10px;
+}
+
+.refresh-category button.is-active {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.14);
+  color: #175cd3;
+}
+
 .refresh-panel label {
   min-width: 150px;
 }
@@ -378,6 +402,10 @@ textarea {
 
   .refresh-panel input {
     max-width: none;
+  }
+
+  .refresh-category {
+    width: 100%;
   }
 
   .refresh-panel span {

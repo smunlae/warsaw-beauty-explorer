@@ -12,14 +12,17 @@ def main() -> None:
     parser.add_argument("--source", default="booksy", help="Registered spider source name.")
     parser.add_argument("--pages", type=int, default=settings.booksy_default_pages, help="Number of listing pages to scrape.")
     parser.add_argument("--headless", action=argparse.BooleanOptionalAction, default=settings.booksy_headless)
-    parser.add_argument("--base-url", default=settings.booksy_base_url)
+    parser.add_argument("--base-url", default=None)
+    parser.add_argument("--category", choices=["hair", "nails", "both"], default="hair")
     args = parser.parse_args()
 
+    categories = ["hair", "nails"] if args.category == "both" else [args.category]
     config = ScraperConfig(
         source=args.source,
         pages=args.pages,
         headless=args.headless,
         base_url=args.base_url if args.source == "booksy" else None,
+        booksy_categories=categories,
     )
     result = run_pipeline(config)
     print(

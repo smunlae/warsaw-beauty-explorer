@@ -60,8 +60,12 @@ export async function updateSalon(id, payload) {
   return response.json();
 }
 
-export async function refreshScraper(salonCount) {
-  const params = new URLSearchParams({ source: "booksy", salon_count: String(salonCount) });
+export async function refreshScraper(salonCount, category) {
+  const params = new URLSearchParams({
+    source: "booksy",
+    category,
+    salon_count: String(salonCount),
+  });
   const response = await fetch(`${API_BASE_URL}/scraper/run?${params.toString()}`, { method: "POST" });
   if (!response.ok) throw new Error("Failed to start scraper");
   return response.json();
