@@ -13,6 +13,7 @@ export function useSalons(filters) {
     if (filters.service) params.set("service", filters.service);
     if (filters.q) params.set("q", filters.q);
     if (filters.sort_by) params.set("sort_by", filters.sort_by);
+    if (filters.sort_order) params.set("sort_order", filters.sort_order);
     return params.toString();
   }, [filters]);
 
@@ -43,6 +44,12 @@ export async function fetchSalon(id) {
   return response.json();
 }
 
+export async function fetchDistricts() {
+  const response = await fetch(`${API_BASE_URL}/salons/districts`);
+  if (!response.ok) throw new Error("Failed to load districts");
+  return response.json();
+}
+
 export async function updateSalon(id, payload) {
   const response = await fetch(`${API_BASE_URL}/salons/${id}`, {
     method: "PATCH",
@@ -63,5 +70,21 @@ export async function refreshScraper(salonCount) {
 export async function fetchScraperStatus() {
   const response = await fetch(`${API_BASE_URL}/scraper/status`);
   if (!response.ok) throw new Error("Failed to load scraper status");
+  return response.json();
+}
+
+export async function enrichSalonDetails(limit) {
+  const params = new URLSearchParams();
+  if (limit) params.set("limit", String(limit));
+  const response = await fetch(`${API_BASE_URL}/scraper/details/run${params.toString() ? `?${params.toString()}` : ""}`, {
+    method: "POST",
+  });
+  if (!response.ok) throw new Error("Failed to start detail parsing");
+  return response.json();
+}
+
+export async function fetchDetailEnrichmentStatus() {
+  const response = await fetch(`${API_BASE_URL}/scraper/details/status`);
+  if (!response.ok) throw new Error("Failed to load detail parsing status");
   return response.json();
 }

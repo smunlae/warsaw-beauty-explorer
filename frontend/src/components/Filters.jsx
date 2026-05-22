@@ -44,6 +44,17 @@ export function Filters({ filters, districts, onChange }) {
           <option value="price">Price</option>
         </select>
       </label>
+
+      <label>
+        Order
+        <select
+          value={filters.sort_order}
+          onChange={(event) => onChange({ ...filters, sort_order: event.target.value })}
+        >
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </label>
     </aside>
   );
 }

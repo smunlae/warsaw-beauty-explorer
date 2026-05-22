@@ -41,4 +41,5 @@ class ScraperConfig(BaseModel):
     pages: int = Field(default=2, ge=1, le=50)
     headless: bool = True
     base_url: str | None = None
+    booksy_categories: list[str] = Field(default_factory=lambda: ["hair"])
     page_delay_ms: int = Field(default=1500, ge=0, le=10000)

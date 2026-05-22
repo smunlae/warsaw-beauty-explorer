@@ -48,6 +48,7 @@ def list_salons(
     service: str | None = Query(default=None),
     q: str | None = Query(default=None),
     sort_by: str = Query(default="reviews_count", pattern="^(reviews_count|rating|name|price)$"),
+    sort_order: str = Query(default="desc", pattern="^(asc|desc)$"),
     db: Session = Depends(get_db),
 ) -> list[SalonListItem]:
     stmt = select(Salon)
@@ -58,9 +59,20 @@ def list_salons(
         stmt = stmt.where(Salon.name.ilike(like_value) | Salon.address.ilike(like_value))
     if service:
         stmt = stmt.where(Salon.services_offered.ilike(f"%{service}%"))
-    stmt = stmt.order_by(*_sort_order(sort_by))
+    stmt = stmt.order_by(*_sort_order(sort_by, sort_order))
     salons = db.execute(stmt).scalars().all()
     return [_salon_to_list_item(salon) for salon in salons]
+
+
+@router.get("/districts", response_model=list[str])
+def list_districts(db: Session = Depends(get_db)) -> list[str]:
+    rows = db.execute(
+        select(Salon.district)
+        .where(Salon.district.is_not(None))
+        .distinct()
+        .order_by(Salon.district.asc())
+    ).scalars().all()
+    return [district for district in rows if district]
 
 
 @router.get("/{salon_id}", response_model=SalonDetail)
@@ -99,15 +111,19 @@ def update_salon(salon_id: int, payload: SalonUpdate, db: Session = Depends(get_
     return _salon_to_detail(salon)
 
 
-def _sort_order(sort_by: str):
+def _sort_order(sort_by: str, sort_order: str):
+    descending = sort_order == "desc"
     if sort_by == "rating":
-        return (Salon.rating.desc().nullslast(), Salon.name.asc())
+        ordered_rating = Salon.rating.desc() if descending else Salon.rating.asc()
+        return (ordered_rating.nullslast(), Salon.name.asc())
     if sort_by == "name":
-        return (Salon.name.asc(),)
+        return (Salon.name.desc() if descending else Salon.name.asc(),)
     if sort_by == "price":
+        ordered_price = Salon.price_range.desc() if descending else Salon.price_range.asc()
         return (
             case((Salon.price_range.is_(None), 1), else_=0).asc(),
-            Salon.price_range.asc(),
+            ordered_price,
             Salon.name.asc(),
         )
-    return (Salon.reviews_count.desc(), Salon.name.asc())
+    ordered_reviews = Salon.reviews_count.desc() if descending else Salon.reviews_count.asc()
+    return (ordered_reviews, Salon.name.asc())
